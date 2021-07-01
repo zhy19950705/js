@@ -1,17 +1,17 @@
-class People {
-  constructor(name) {
-    this.name = name;
-  }
-}
+// class People {
+//   constructor(name) {
+//     this.name = name;
+//   }
+// }
 
-class Man extends People {
-  constructor(name, sex) {
-    super(name);
-    this.sex = sex;
-  }
-}
+// class Man extends People {
+//   constructor(name, sex) {
+//     super(name);
+//     this.sex = sex;
+//   }
+// }
 
-var man = new Man("Tom", "M");
+// var man = new Man("Tom", "M");
 
 ("use strict");
 
@@ -41,6 +41,7 @@ function _inherits(subClass, superClass) {
   subClass.prototype = Object.create(superClass && superClass.prototype, {
     constructor: { value: subClass, writable: true, configurable: true },
   });
+  // 将subClass.__proto__ 设置为superClass, super时调用subClass.__proto__
   if (superClass) _setPrototypeOf(subClass, superClass);
 }
 
@@ -151,3 +152,4 @@ var Man = /*#__PURE__*/ (function (_People) {
 })(People);
 
 var man = new Man("Tom", "M");
+console.dir(man);

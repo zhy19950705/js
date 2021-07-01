@@ -1,4 +1,4 @@
-function Traverse(head) {
+function Traverse_v1(head) {
   if (!head) return;
   const linkList = [head];
   const resultList = [];
@@ -20,7 +20,7 @@ function Traverse(head) {
   return resultList;
 }
 
-function Traverse2(head) {
+function Traverse_v2(head) {
   if (!head) return;
   const result = [];
   let curLevel = [head];
