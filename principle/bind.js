@@ -22,7 +22,7 @@ Function.prototype.bind_v2 = function (context) {
   const self = this;
   const args = Array.prototype.slice.call(arguments, 1);
   return function () {
-    const bindArgs = args.concat(...arguments);
+    const bindArgs = args.concat(arguments);
     return self.apply(context, bindArgs);
   };
 };
@@ -47,10 +47,11 @@ function bar(name, age) {
  * 构造函数模拟实现
  * 一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的 this 值被忽略，同时调用时的参数被提供给模拟函数。
  * */
-Function.prototype.bind_v3 = function (context, ...args) {
+Function.prototype.bind_v3 = function (context) {
   const self = this;
+  const args = Array.prototype.slice.call(arguments, 1);
   const fBound = function () {
-    const bindArgs = args.concat(...arguments);
+    const bindArgs = args.concat(arguments);
     // 当作为构造函数时，this 指向实例，此时结果为 true，将绑定函数的 this 指向该实例，可以让实例获得来自绑定函数的值
     // 以上面的是 demo 为例，如果改成 `this instanceof fBound ? null : context`，实例只是一个空对象，将 null 改成 this ，实例会具有 habit 属性
     // 当作为普通函数时，this 指向 window，此时结果为 false，将绑定函数的 this 指向 context
@@ -76,11 +77,12 @@ Function.prototype.bind_v3 = function (context, ...args) {
  * 在v3中，直接将fBound.prototype = this.prototype, 因为是同一个引用，修改fBound.prototype时，也会修改绑定函数的prototype
  * 可以通过中转函数优化
  *  */
-Function.prototype.bind_v4 = function (context, ...args) {
+Function.prototype.bind_v4 = function (context) {
   const self = this;
+  let args = Array.prototype.slice.call(arguments, 1);
   const fNOP = function () {};
   const fBound = function () {
-    args = args.concat(...arguments);
+    args = args.concat(arguments);
     return self.apply(this instanceof fBound ? this : context, args);
   };
   fNOP.prototype = this.prototype;

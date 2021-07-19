@@ -1,13 +1,18 @@
-function Parent(name = 'why') {
-    this.name = 'why'
-    this.age = [1, 2]
+function Animal() {
+  this.colors = ["black", "white"];
 }
-function Child() {
-    this.child = true
-}
-Child.prototype = new Parent()
-const child1 = new Child()
-const child2 = new Child('zhy')
-child1.age.push(3)
-console.log(child1.age)
-console.log(child2.age)
+Animal.prototype.getColor = function () {
+  return this.colors;
+};
+function Dog() {}
+Dog.prototype = new Animal();
+
+let dog1 = new Dog();
+dog1.colors.push("brown");
+let dog2 = new Dog();
+console.log(dog2.colors);
+
+// 原型链继承存在的问题：
+
+// 问题1：
+// 问题2：子类在实例化的时候不能给父类构造函数传参；

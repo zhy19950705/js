@@ -1,4 +1,5 @@
 /**
+ * https://github.com/mqyqingfeng/Blog/issues/11
  * 将函数设为对象的属性
  * 执行该函数
  * 删除该函数
@@ -20,6 +21,7 @@ Function.prototype.call_v1 = function (context) {
 
 /**
  * 可以传入参数
+ * 参数个数不确定，使用
  */
 Function.prototype.call_v2 = function (context) {
   context.fn = this;
@@ -28,6 +30,7 @@ Function.prototype.call_v2 = function (context) {
   for (let i = 1; i < arguments.length; i++) {
     args.push("arguments[" + i + "]");
   }
+  // args 会自动调用 Array.toString() 这个方法。
   eval("context.fn(" + args + ")");
   delete context.fn;
 };
@@ -50,7 +53,7 @@ Function.prototype.call_v3 = function (context) {
   for (let i = 1; i < arguments.length; i++) {
     _args.push("arguments[" + i + "]");
   }
-  const result = eval("context.fn(" + args + ")");
+  const result = eval("context.fn(" + _args + ")");
   delete context.fn;
   return result;
 };

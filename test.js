@@ -1,0 +1,1 @@
+function objectCreate(obj) {}

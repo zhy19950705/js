@@ -1,104 +1,68 @@
-var prefix = '~'
-function Events () {}
-
-function EE(fn, context, once = false) {
-    this.fn = fn
-    this.context = context
-    this.once = once
+function EE(fn, once = false, context) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once;
 }
-
-function addListener(emitter, event, fn, context, once) {
-    if (typeof fn !== 'function') {
-        throw new TypeError('The listener must be a function')
-    }
-    var listener = new EE(fn, context, once)
-    var evt = prefix ? prefix + event : event
-    if (!emitter._events[evt]) {
-        emitter._events[evt] = listener
-        emitter._eventsCounts++
-    } else if (!emitter._events[evt].fn) {
-        emitter._events[evt].push(listener)
+class EventEmitter {
+  constructor() {
+    this.cache = {};
+  }
+  on(name, fn, context) {
+    const e = new EE(fn, false, context);
+    if (this.cache[name]) {
+      this.cache[name].push(e);
     } else {
-        emitter._events[evt] = [emitter._events[evt], listener]
+      this.cache[name] = [e];
     }
-    return emitter
-}
-
-function clearEvents (emitter, evt) {
-    if (emitter._eventsCounts === 1) {
-        emitter._events = new Events()
-        emitter._eventsCounts = 0
+  }
+  once(name, fn, context) {
+    const e = new EE(fn, true, context);
+    if (this.cache[name]) {
+      this.cache[name].push(e);
     } else {
-        delete emitter._events[evt]
+      this.cache[name] = [e];
     }
-}
-
-function EventEmitter() {
-    this._events = new Events()
-    this._eventsCounts = 0
-}
-
-EventEmitter.prototype.on = function (event, fn, context) {
-    return addListener(this, event, fn, context, false)
-}
-
-EventEmitter.prototype.once = function (event, fn, context) {
-    return addListener(this, event, fn, context, true)
-}
-
-EventEmitter.prototype.removeListener = function(event, fn, context, once) {
-    var evt = prefix ? prefix + event : event
-    if (!this._events[evt]) return
+  }
+  emit(name, ...args) {
+    if (!this.cache[name]) return;
+    const events = this.cache[name].slice();
+    for (let e of events) {
+      if (e.once) {
+        this.off(name, e.fn);
+      }
+      e.fn.apply(e.context, args);
+    }
+  }
+  off(name, fn) {
     if (!fn) {
-        clearEvents(this, evt)
-        return this
+      this.cache[name] = null;
+      return;
     }
-    var listeners = this._events[evt]
-    if (listeners.fn) {
-        if (listeners.fn === fn && (!once || listeners.once) && (!context || listeners.context === context)) {
-            clearEvents(this, evt)
-        }
-    } else {
-        for (var i = 0, len = listeners.length, events = []; i < len; i++) {
-            if (listeners[i].fn !== fn || (once && !listeners[i].once) || (context && listeners[i].context !== context)) {
-                events.push(listeners[i])
-            }
-        }
+    const tasks = this.cache[name] || [];
+    const index = this.cache[name].findIndex((e) => e.fn === fn);
+    if (index > -1) {
+      this.cache[name].splice(index, 1);
     }
-    if (events.length) {
-        this._events[evt] = events.length === 1 ? events[0] : events
-    } else {
-        clearEvents(this, evt)
-    }
-    return this
+  }
 }
-
-EventEmitter.prototype.emit = function(event, ...args) {
-    var evt = prefix ? prefix + event : event
-    if (!this._events[evt]) return false
-    var listeners = this._events[evt],
-        len = arguments.length,
-        args,
-        i;
-    if (listeners.fn) {
-        if (listeners.once) {
-            this.removeListener(event, listeners.fn, undefined, true);
-        }
-        listeners.fn.apply(listeners.context, args)
-    } else {
-        var length = listeners.length,
-            j;
-        for (let i = 0; i < length; i++) {
-            if (listeners[i].once) {
-                this.removeListener(event, )
-            }
-            listeners[i].fn.apply(listeners[i].context, args)
-        }
-    }
-    return true
+const eventBus = new EventEmitter();
+function fn1(name, age) {
+  console.log("fn1", name, age);
 }
+function fn2(name, age) {
+  console.log("fn2", name, age);
+}
+function fn3(name, age) {
+  console.log("fn3", name, age);
+}
+eventBus.on("test", fn1);
+eventBus.once("test", fn2);
+eventBus.on("test", fn3);
 
-EventEmitter.prototype.off = EventEmitter.prototype.removeListener
-EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-EventEmitter.prefixed = prefix;
-EventEmitter.EventEmitter = EventEmitter;
+eventBus.emit("test", "zhy", 1);
+
+eventBus.off("test", fn1);
+eventBus.emit("test", "zhy", 2);
+
+eventBus.off("test");
+eventBus.emit("test", "zhy", 3);

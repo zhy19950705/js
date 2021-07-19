@@ -42,37 +42,42 @@ const timeout = (i) =>
 //   console.log(result);
 // })();
 
-function asyncPool_es6(tasks, poolLimit) {
+function asyncPool_es6(tasks = [], poolLimit = 2) {
+  const n = tasks.length,
+    result = Array(n).fill(false);
   let count = 0;
-  let result = []; // 存储所有的异步任务
-  let executing = []; // 存储正在执行的异步任务
-  const queue = function () {
-    if (count === tasks.length) {
-      return Promise.resolve();
+  return new Promise((resolve) => {
+    while (count < poolLimit) {
+      next();
     }
-    const task = tasks[count++];
-    const p = Promise.resolve().then(() => task());
-    result.push(p);
-
-    let r = Promise.resolve();
-    // 当poolLimit值小于或等于总任务个数时，进行并发控制
-    if (poolLimit <= tasks.length) {
-      // 当任务完成后，从正在执行的任务数组中移除已完成的任务
-      const e = p.then(() => executing.splice(executing.indexOf(e), 1));
-      executing.push(e);
-      if (executing.length >= poolLimit) {
-        r = Promise.race(executing);
+    function next() {
+      let current = count++;
+      // 处理边界条件
+      if (current >= n) {
+        // 请求全部完成就将promise置为成功状态, 然后将result作为promise值返回
+        !result.includes(false) && resolve(result);
+        return;
       }
+      Promise.resolve(tasks[current]())
+        .then((res) => {
+          result[current] = res;
+          if (current < n) {
+            next();
+          }
+        })
+        .catch((reason) => {
+          result[current] = reason;
+          if (current < n) {
+            next();
+          }
+        });
     }
-    // 正在执行任务列表 中较快的任务执行完成之后，才会从array数组中获取新的待办任务
-    return r.then(() => queue());
-  };
-  return queue().then(() => Promise.all(result));
+  });
 }
 (async () => {
   const result = await asyncPool_es6(
-    [() => timeout(1), () => timeout(2), () => timeout(1), () => timeout(2)],
-    3
+    [() => timeout(1), () => timeout(1), () => timeout(1), () => timeout(1)],
+    2
   );
   console.log(result);
 })();
