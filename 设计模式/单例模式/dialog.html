@@ -1,0 +1,35 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="onOpenClick()">打开弹窗</button>
+    <button onclick="onCancelClick()">关闭弹窗</button>
+    <script>
+        let instance
+        const onOpenClick = (function () {
+            let div = document.createElement('div')
+            div.innerHTML = 'modal'
+            div.style.display = 'none'
+            return function () {
+                if (instance === undefined) {
+                    instance = div
+                    document.body.appendChild(instance)
+                }
+                div.style.display = ''
+            }
+        })()
+        const onCancelClick = () => {
+            if (instance) {
+                instance.style.display = 'none'
+            }
+        }
+    </script>
+</body>
+
+</html>
