@@ -4,7 +4,7 @@ async function asyncPool_es7(tasks, poolLimit) {
   const executing = []; // 存储正在执行的异步任务
   for (const task of tasks) {
     const promise = new Promise((resolve) => {
-      Promise.resolve(task())
+      Promise.resolve(typeof task === "function" ? task() : task)
         .then((res) => {
           resolve(res);
           executing.splice(executing.indexOf(promise), 1);
@@ -34,13 +34,13 @@ const timeout = (i) =>
       }
     }, i * 1000)
   );
-// (async () => {
-//   const result = await asyncPool_es7(
-//     [() => timeout(1), () => timeout(2), () => timeout(1), () => timeout(2)],
-//     2
-//   );
-//   console.log(result);
-// })();
+(async () => {
+  const result = await asyncPool_es7(
+    [() => timeout(1), () => timeout(2), () => timeout(1), () => timeout(2)],
+    2
+  );
+  console.log(result);
+})();
 
 function asyncPool_es6(tasks = [], poolLimit = 2) {
   const n = tasks.length,
@@ -74,10 +74,10 @@ function asyncPool_es6(tasks = [], poolLimit = 2) {
     }
   });
 }
-(async () => {
-  const result = await asyncPool_es6(
-    [() => timeout(1), () => timeout(1), () => timeout(1), () => timeout(1)],
-    2
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await asyncPool_es6(
+//     [() => timeout(1), () => timeout(1), () => timeout(1), () => timeout(1)],
+//     2
+//   );
+//   console.log(result);
+// })();
