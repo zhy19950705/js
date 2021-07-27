@@ -25,3 +25,21 @@ function dfs(left, right) {
   dfs(left.right, right.left);
   dfs(right.left, right.right);
 }
+
+var connect = function (root) {
+  if (!root) return root;
+  let queue = [root];
+  while (queue.length) {
+    const nextQueue = [];
+    while (queue.length) {
+      const node = queue.shift();
+      node.left && nextQueue.push(node.left);
+      node.right && nextQueue.push(node.right);
+    }
+    for (let i = 0; i < nextQueue.length - 1; i++) {
+      nextQueue[i].next = nextQueue[i + 1];
+    }
+    queue = nextQueue;
+  }
+  return root;
+};

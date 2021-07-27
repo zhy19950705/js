@@ -135,4 +135,6 @@ function commitRoot() {
   }
 }
 // 在浏览器空闲的时候开始构建
-requestIdleCallback(workLoop);
+requestIdleCallback(workLoop, {
+  timeout,
+});

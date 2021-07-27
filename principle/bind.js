@@ -102,6 +102,7 @@ Function.prototype.bind_v5 = function (context, ...args) {
     );
   }
   const self = this;
+  const fNOP = function () {};
   const fBound = function () {
     args = args.concat(...arguments);
     return self.apply(this instanceof fBound ? this : context, args);

@@ -28,13 +28,18 @@ function deepClone_v1(obj) {
 }
 // console.log(deepClone_v1(obj));
 
+function deepClone_v2(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+// console.log(deepClone_v2(obj));
+
 function isObject(target) {
   return (
     (typeof target === "object" || typeof target === "function") &&
     target !== null
   );
 }
-function deepClone_v2(obj, map = new WeakMap()) {
+function deepClone_v3(obj, map = new WeakMap()) {
   if (map.has(obj)) return obj;
   let constructor = obj.constructor;
   if (/^(RegExp|Date)$/i.test(constructor.name)) {
@@ -56,4 +61,48 @@ function deepClone_v2(obj, map = new WeakMap()) {
     return obj;
   }
 }
-console.log(deepClone_v2(obj));
+// console.log(deepClone_v3(obj));
+
+function deepClone_v4(obj) {
+  const root = {};
+  const weakMap = new WeakMap();
+  const loopList = [
+    {
+      parent: root,
+      key: undefined,
+      data: obj,
+    },
+  ];
+
+  while (loopList.length) {
+    const node = loopList.shift();
+    const { parent, key, data } = node;
+    let res = parent;
+    if (typeof key !== "undefined") {
+      res = parent[key] = {};
+    }
+    for (let k in data) {
+      if (data.hasOwnProperty(k)) {
+        if (weakMap.has(data[k])) {
+          res[k] = data[k];
+          continue;
+        }
+        let constructor = data[k].constructor;
+        if (/^(RegExp|Date)$/i.test(constructor.name)) {
+          res[k] = new constructor(data[k]);
+        } else if (isObject(data[k])) {
+          weakMap.set(data[k], true);
+          loopList.push({
+            parent: res,
+            key: k,
+            data: data[k],
+          });
+        } else {
+          res[k] = data[k];
+        }
+      }
+    }
+  }
+  return root;
+}
+console.log(deepClone_v4(obj));
