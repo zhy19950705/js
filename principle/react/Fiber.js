@@ -24,6 +24,7 @@ const workInProgressRoot = {
 let nextUnitOfWork = workInProgressRoot;
 function workLoop(deadLine) {
   // 如果下一个要构建的执行单元存在并且浏览器有空余时间
+  // 这个while循环会在任务执行完或者时间到了的时候结束
   while (nextUnitOfWork && deadLine.timeRemaining() > 0) {
     // 构建执行单元并返回新的执行单元
     nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
@@ -32,33 +33,46 @@ function workLoop(deadLine) {
   if (!nextUnitOfWork) {
     // 进入到第二个阶段 执行 DOM 操作
     commitRoot();
+  } else {
+    // 如果任务还没完，但是时间到了，我们需要继续注册requestIdleCallback
+    requestIdleCallback(workLoop);
   }
 }
+// 在浏览器空闲的时候开始构建
+requestIdleCallback(workLoop, {
+  timeout,
+});
 
-// Fiber 工作的第一个阶段
-function performUnitOfWork(workInProgress) {
+/**
+ * Fiber 工作的第一个阶段
+ * performUnitOfWork用来执行任务，参数是我们的当前fiber任务，返回值是下一个任务
+ * @param {Fiber} unitOfWork
+ * @returns
+ */
+function performUnitOfWork(unitOfWork) {
+  const current = unitOfWork.alternate;
   // 构建阶段向下走的过程
   // 1. 创建当前 Fiber 节点的 DOM 对象并存储在 stateNode 属性中
   // 2. 构建子级 Fiber 对象
-  beginWork(workInProgress);
+  beginWork(fibee);
   // 如果子级存在
-  if (workInProgress.child) {
+  if (fiber.child) {
     // 返回子级 构建子级的子级
-    return workInProgress.child;
+    return fiber.child;
   }
 
   // 开始构建阶段向上走的过程
   // 如果父级存在
-  while (workInProgress) {
+  while (fiber) {
     // 构建 Fiber 链表
-    completeUnitOfWork(workInProgress);
+    completeUnitOfWork(fiber);
     // 如果同级存在
-    if (workInProgress.sibling) {
+    if (fiber.sibling) {
       // 返回同级 构建同级的子级
-      return workInProgress.sibling;
+      return fiber.sibling;
     }
     // 同级不存在 退回父级 看父级是否有同级
-    workInProgress = workInProgress.return;
+    fiber = fiber.return;
   }
 }
 function beginWork(workInProgress) {
@@ -134,7 +148,3 @@ function commitRoot() {
     currentFiber = currentFiber.nextEffect;
   }
 }
-// 在浏览器空闲的时候开始构建
-requestIdleCallback(workLoop, {
-  timeout,
-});

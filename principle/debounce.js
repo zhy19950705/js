@@ -96,13 +96,13 @@ function debounce_v5(fn, delay, immediate) {
     if (timerId) clearTimeout(timerId);
     let result;
     if (immediate) {
-      let callNow = !timerId;
+      if (!timerId) result = fn.apply(context, args);
       timerId = setTimeout(() => {
         timerId = null;
       }, delay);
-      if (callNow) result = fn.apply(context, args);
     } else {
       timerId = setTimeout(() => {
+        timerId = null;
         fn.apply(context, args);
       }, delay);
     }
@@ -151,3 +151,41 @@ function debounce_v6(fn, delay, immediate) {
 // setTimeout(() => {
 //   fn_v6("v6");
 // }, 2000);
+
+function debounce_v7(fn, wait = 50, immediate = true) {
+  let timerId, context, args;
+  // 延迟执行函数
+  const later = () =>
+    setTimeout(() => {
+      timerId = null;
+      if (!immediate) {
+        fn.apply(context, args);
+        context = args = null;
+      }
+    }, wait);
+
+  function debounced(...params) {
+    if (!timerId) {
+      timerId = later();
+      if (immediate) {
+        fn.apply(context, params);
+      } else {
+        context = this;
+        args = params;
+      }
+    } else {
+      clearTimeout(timerId);
+      timerId = later();
+    }
+  }
+  debounced.cancel = function () {
+    clearTimeout(timerId);
+    timerId = context = args = null;
+  };
+  return debounced;
+}
+const fn_v7 = debounce_v7(test, 2000, true);
+fn_v7("v7");
+setTimeout(() => {
+  fn_v7("v7");
+}, 1000);
