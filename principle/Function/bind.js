@@ -102,12 +102,19 @@ Function.prototype.bind_v5 = function (context, ...args) {
     );
   }
   const self = this;
-  const fNOP = function () {};
+  function noop() {}
   const fBound = function () {
     args = args.concat(...arguments);
     return self.apply(this instanceof fBound ? this : context, args);
   };
-  fNOP.prototype = this.prototype;
-  fBound.prototype = new fNOP();
+  noop.prototype = this.prototype;
+  fBound.prototype = new noop();
   return fBound;
 };
+
+const Foo = bar.bind(foo);
+const zhy = new Foo("zhy", 26);
+console.log("foo", zhy);
+const Foo_v5 = bar.bind_v5(foo);
+const zhy_v5 = new Foo_v5("zhy", 26);
+console.log("foo_v5", zhy_v5);

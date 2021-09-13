@@ -1,32 +1,3 @@
-function changeKey(str = "") {
-  let chars = str.split("").map((c, index) => {
-    if (c.toUpperCase() === c) {
-      if (index === 0) {
-        return c.toLowerCase();
-      } else {
-        return "_" + c.toLowerCase();
-      }
-    } else {
-      return c;
-    }
-  });
-  return chars.join("");
-}
-
-function change(obj) {
-  const keys = Object.keys(obj);
-  for (let key of keys) {
-    if (typeof obj[key] === "object") {
-      change(obj[key]);
-    }
-    const changedKey = changeKey(key);
-    if (changedKey === key) continue;
-    obj[changedKey] = obj[key];
-    delete obj[key];
-  }
-  return obj;
-}
-
 console.log(
   change({
     UserName: "toutiao",
@@ -38,3 +9,28 @@ console.log(
     },
   })
 );
+function changeKey(key) {
+  return key.split("").reduce((prev, cur, index) => {
+    if (cur.toUpperCase() === cur) {
+      if (index === 0) {
+        cur = cur.toLowerCase();
+      } else {
+        cur = "_" + cur.toLowerCase();
+      }
+    }
+    return prev + cur;
+  }, "");
+}
+function change(obj) {
+  const keys = Object.keys(obj);
+  for (let key of keys) {
+    if (typeof obj[key] === "object") {
+      change(obj[key]);
+    }
+    const newKey = changeKey(key);
+    if (newKey === key) continue;
+    obj[newKey] = obj[key];
+    delete obj[key];
+  }
+  return obj;
+}

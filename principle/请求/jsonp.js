@@ -3,10 +3,8 @@
 function jsonp({ url, params, callbackName }) {
   function generateUrl() {
     let dataUrl = "";
-    for (let key in params) {
-      if (params.hasOwnProperty(key)) {
-        dataUrl += `${key}=${params[key]}&`;
-      }
+    for (let [key, value] of Object.entries(params)) {
+      dataUrl += `${key}=${value}&`;
     }
     dataUrl += `callbackName=${callbackName}`;
     return `${url}?${dataUrl}`;
@@ -14,10 +12,10 @@ function jsonp({ url, params, callbackName }) {
   return new Promise((resolve, reject) => {
     const scriptEle = document.createElement("script");
     scriptEle.src = generateUrl();
-    document.appendChild(scriptEle);
-    window[callbackName] = (data) => {
+    document.body.appendChild(scriptEle);
+    window[callbackName] = function (data) {
       resolve(data);
-      document.removeChild(scriptEle);
+      document.body.removeChild(scriptEle);
     };
   });
 }

@@ -202,6 +202,37 @@ class MyPromise {
       }
     });
   }
+
+  static allSettled(promiseArr = []) {
+    let count = 0;
+    let result = [];
+    if (promiseArr.length === 0) return Promise.resolve([]);
+    return new MyPromise((resolve, reject) => {
+      promiseArr.forEach((p, index) => {
+        MyPromise.resolve(p)
+          .then((res) => {
+            result[index] = {
+              status: "fullfilled",
+              value: res,
+            };
+            count++;
+            if (count === promiseArr.length) {
+              resolve(result);
+            }
+          })
+          .catch((e) => {
+            result[index] = {
+              status: "rejected",
+              value: e,
+            };
+            count++;
+            if (count === promiseArr.length) {
+              resolve(result);
+            }
+          });
+      });
+    });
+  }
 }
 
 // test case

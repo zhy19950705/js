@@ -124,11 +124,10 @@ function debounce_v6(fn, delay, immediate) {
     let args = Array.from(arguments);
     if (timerId) clearTimeout(timerId);
     if (immediate) {
-      let callNow = !timerId;
       timerId = setTimeout(() => {
         timerId = null;
       }, delay);
-      if (callNow) result = fn.apply(context, args);
+      if (!timerId) result = fn.apply(context, args);
     } else {
       timerId = setTimeout(() => {
         fn.apply(context, args);

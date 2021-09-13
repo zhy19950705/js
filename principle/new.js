@@ -61,7 +61,13 @@ function new_final() {
   if (typeof constructor !== "function") {
     throw new Error("constructor should be a function");
   }
+
   var obj = Object.create(constructor.prototype);
   var res = constructor.apply(obj, arguments);
-  return res instanceof Object ? res : obj;
+  return isObject(res) ? res : obj;
+}
+
+function isObject(obj) {
+  return (typeof obj === "object" && obj !== null) || typeof obj === "function";
+  // return obj instanceof Object
 }
