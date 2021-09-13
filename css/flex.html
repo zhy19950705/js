@@ -1,0 +1,75 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .flex {
+            display: flex;
+        }
+
+        .flex>div:nth-child(1) {
+            background: red;
+            padding: 10px;
+        }
+
+        .flex>div:nth-child(2) {
+            background: green;
+            padding: 10px;
+        }
+
+        .flex>div:nth-child(3) {
+            background: orange;
+            padding: 10px;
+        }
+
+        .flex-grow {
+            flex-grow: 1;
+        }
+
+        .flex-shrink {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>flex-grow</h3>
+    <div class="flex" style="margin-bottom: 20px;">
+        <div class="flex-grow">flex-grow: 1, 默认为0，为1时等分剩余空间</div>
+        <div style="width: 200px">200px, flex-grow: 0</div>
+        <div style="width: 200px">200px, flex-grow: 0</div>
+    </div>
+    <div class="flex">
+        <div class="flex-grow">flex-grow: 1</div>
+        <div class="flex-grow">等比flex-grow: 1</div>
+        <div class="flex-grow">flex-grow: 1</div>
+    </div>
+    <h3>flex-shrink</h3>
+    <div class="flex" style="margin-bottom: 20px;">
+        <div class="" style="width: 500px">500px flex-shrink默认为1，当空间不足时，都将等比例缩小</div>
+        <div class="" style="width: 500px">500px flex-shrink: 1</div>
+        <div class="" style="width: 500px">500px flex-shrink: 1</div>
+    </div>
+    <div class="flex" style="margin-bottom: 20px;">
+        <div class="flex-shrink" style="width: 500px">500px flex-shrink: 0, 长度不足时，不缩小</div>
+        <div class="" style="width: 500px">500px flex-shrink: 0</div>
+        <div class="" style="width: 500px">500px flex-shrink: 0</div>
+    </div>
+    <h3>flex-basis</h3>
+    <div class="flex" style="margin-bottom: 20px;">
+        <div class="" style="width: 200px">200px </div>
+        <div class="" style="flex-basis: 400px;">200px, flex-basis: 400px</div>
+        <div class="" style="flex-basis: 400px;">200px, flex-basis: 400px;</div>
+    </div>
+    <h3>flex</h3>
+    <div class="flex" style="margin-bottom: 20px;">
+        <div class="" style="flex: 0 1 auto;">flex: 0 1 auto; 不放大，空间不足时缩小，原大小</div>
+        <div class="" style="flex: 0 1 auto;">flex: 0 1 auto; 不放大，空间不足时缩小，原大小</div>
+        <div class="" style="flex: 0 1 auto;">flex: 0 1 auto; 不放大，空间不足时缩小，原大小</div>
+    </div>
+</body>
+
+</html>

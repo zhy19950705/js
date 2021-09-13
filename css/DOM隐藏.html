@@ -1,0 +1,79 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .content {
+            padding: 10px;
+            background: red;
+            color: #fff;
+        }
+
+        .child {
+            padding: 10px;
+            background: blue;
+        }
+
+        #display {
+            transition: display 1s;
+        }
+
+        #visibility {
+            transition: visibility 1s;
+        }
+
+        #opacity {
+            transition: opacity 1s;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h3>display</h3>
+        <button onclick="onDisplayClick()">切换</button>
+        <div id="display" class="content" onclick="console.log('click')">
+            test display
+            <div class="child" style="display: '';">child</div>
+        </div>
+    </div>
+    <div>
+        <h3>visibility</h3>
+        <button onclick="onVisibilityClick()">切换</button>
+        <div id="visibility" class="content" onclick="console.log('click')">
+            test visibility
+            <div class="child" style="visibility: visible;">child</div>
+        </div>
+    </div>
+    <div>
+        <h3>opacity</h3>
+        <button onclick="onOpacityClick()">切换</button>
+        <div id="opacity" class="content" onclick="console.log('click')">
+            test opacity
+            <div class="child" style="opacity: 1;">child</div>
+        </div>
+    </div>
+    <script>
+        const select = document.getElementById('select')
+        const display = document.getElementById('display')
+        const visibility = document.getElementById('visibility')
+        const opacity = document.getElementById('opacity')
+        const onDisplayClick = () => {
+            const old = display.style.display
+            display.style.display = old === 'none' ? '' : 'none'
+        }
+        const onVisibilityClick = () => {
+            const old = visibility.style.visibility
+            visibility.style.visibility = old === 'hidden' ? '' : 'hidden'
+        }
+        const onOpacityClick = () => {
+            const old = opacity.style.opacity
+            opacity.style.opacity = old === '0' ? '' : '0'
+        }
+    </script>
+</body>
+
+</html>

@@ -4,8 +4,7 @@
  */
 var mySqrt = function (x) {
   if (x === 0) return 0;
-  if (x === 1) return 1;
-  let left = 0,
+  let left = 1,
     right = Math.floor(x / 2); // 3, 4符合要求
   // 在区间 [left..right] 查找目标元素
   while (left < right) {

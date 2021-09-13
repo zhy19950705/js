@@ -6,9 +6,9 @@ Object.create_v1 = function (proto, propertyObj) {
   if (propertyObj === null) {
     throw new Error("Cannot convert undefined or null to object");
   }
-  function Fn() {}
-  Fn.prototype = proto;
-  const obj = new Fn();
+  function noop() {}
+  noop.prototype = proto;
+  const obj = new noop();
   if (propertyObj !== undefined) {
     // 创建一个没有原型对象的对象，Object.create(null)
     Object.defineProperties(obj, propertyObj);

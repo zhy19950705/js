@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "dayjs": "^1.10.5",
+    "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
+    "promise-fun": "^1.0.1",
     "qs": "^6.10.1",
     "react": "^17.0.2"
   },
